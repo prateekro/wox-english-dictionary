@@ -1,0 +1,67 @@
+// byte array JSON need to be converted to UTF-8 encoding to read JSON.
+
+ b'{
+    "id": "confectioner",
+    "metadata": {
+        "operation": "retrieve",
+        "provider": "Oxford University Press",
+        "schema": "RetrieveEntry"\n    },
+    "results": [
+        {
+            "id": "confectioner",
+            "language": "en-us",
+            "lexicalEntries": [
+                {
+                    "entries": [
+                        {
+                            "senses": [
+                                {
+                                    "definitions": [
+                                        "a person whose occupation is making or selling candy and other sweets."
+                                    ],
+                                    "domains": [
+                                        {
+                                            "id": "sweet",
+                                            "text": "Sweet"
+                                        }
+                                    ],
+                                    "id": "m_en_gbus0209730.005",
+                                    "shortDefinitions": [
+                                        "person whose trade is making or selling confectionery"
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "language": "en-us",
+                    "lexicalCategory": {
+                        "id": "noun",
+                        "text": "Noun"
+                    },
+                    "pronunciations": [
+                        {
+                            "audioFile": "http://audio.oxforddictionaries.com/en/mp3/xconfectioner_us_1.mp3",
+                            "dialects": [
+                                "American English"
+                            ],
+                            "phoneticNotation": "respell",
+                            "phoneticSpelling": "k\xc9\x99n\xcb\x88fekSH(\xc9\x99)n\xc9\x99r"
+                        },
+                        {
+                            "audioFile": "http://audio.oxforddictionaries.com/en/mp3/xconfectioner_us_1.mp3",
+                            "dialects": [
+                                "American English"
+                            ],
+                            "phoneticNotation": "IPA",
+                            "phoneticSpelling": "k\xc9\x99n\xcb\x88f\xc9\x9bk\xca\x83(\xc9\x99)n\xc9\x99r"
+                        }
+                    ],
+                    "text": "confectioner"
+                }
+            ],
+            "type": "headword",
+            "word": "confectioner"
+        }
+    ],
+    "word": "confectioner"
+		}'

@@ -7,6 +7,8 @@ import requests
 # from oxford_dictionary_api import OxfordDictionaryAPI
 import re
 import isafe
+import pyperclip
+from tinydb import TinyDB, Query
 # import time
 
 # from isafe import BASE_URL, LANGUAGE_CODE, entries, APP_ID, APP_KEY as cred
@@ -22,14 +24,24 @@ class PrateekDictionary(Wox):
     LANGUAGE_CODE = isafe.CONFIG['LANGUAGE_CODE'] 
     entries = isafe.CONFIG['entries'] 
     APP_ID = isafe.CONFIG['APP_ID'] 
-    APP_KEY = isafe.CONFIG['APP_KEY'] 
+    APP_KEY = isafe.CONFIG['APP_KEY']
+    db = TinyDB('db.json')
+
+    def resultOut(self, results, title, subtitle, IcoPath = "Images/app.ico", ContextData = "ctxData"):
+        results.append({
+            "Title": title,
+            "SubTitle": subtitle,
+            "IcoPath": IcoPath,
+            "ContextData": ContextData
+        })
 
     def query(self, query):
         results = []
         if str(query).lower() == "intellij".lower():
             query = "Idea it is."
 
-        # if "." in query:
+        self.resultOut(results, title = "Word: "+query, subtitle = "Word Length: {}".format(str(len(query))))
+
         suffix = "?"
         if query.endswith(suffix):
             # def meaning(self, word):
@@ -49,61 +61,18 @@ class PrateekDictionary(Wox):
                 PhoneticDefinition = str(getMeaning['results'][0]["lexicalEntries"][0]["pronunciations"][0]["phoneticNotation"])
                 PhoneticSpelling = str(getMeaning['results'][0]["lexicalEntries"][0]["pronunciations"][0]["phoneticSpelling"])
 
-                results.append({
-                    "Title": "Definition: "+ query,
-                    "SubTitle": "{}: {} || {} || PhoneticDefinition: {}".format(DialectType, PhoneticSpelling, LexCategory, PhoneticDefinition),
-                    "IcoPath":"Images/app.ico",
-                    # "ContextData": self.dataCTXDict
-                    "ContextData": "ctxData"
-                })
+
+                self.resultOut(results, "Definition: "+ query, "{}: {} || {} || PhoneticDefinition: {}".format(DialectType, PhoneticSpelling, LexCategory, PhoneticDefinition))
+
             else:
-                results.append({
-                    "Title": query+" ::insideELSE",
-                    "SubTitle": "Query: {}".format(query),
-                    "IcoPath":"Images/app.ico",
-                    # "ContextData": self.dataCTXDict
-                    "ContextData": "ctxData"
-                })
 
+                self.resultOut(results, query + " (word unreachable)", "Please check internet connection")
+                #end of status code
 
-            # getMeaning = str(getMeaning, encoding='utf-8')
-            # getMeaning = json.dumps(getMeaning, encoding='utf-8')
+            self.resultOut(results, title= query + " [inside split 0]", subtitle= query)
 
-            # return getMeaning
-            # return query
-            # query = str(getMeaning['results'][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0])
-            # query = str(getMeaning)
+        self.resultOut(results, title= query + " [last]", subtitle= query)
 
-            # time.sleep(5)
-
-            results.append({
-                "Title": query+"--new",
-                "SubTitle": "Query: {}".format(query),
-                "IcoPath":"Images/app.ico",
-                # "ContextData": self.dataCTXDict
-                "ContextData": "ctxData"
-            })
-
-            # query = self.meaning("hello")
-
-        # self.dataCTXDict.update({"ID", query})
-
-        # self.TITLE = query
-        # if str(query).lower() == "confectioner".lower():
-        #     catchOuput = OxfordDictionaryAPI.meaning(query)
-        #
-        #     self.dataCTXDict.update({"ID", catchOuput['id']})
-        #     self.dataCTXDict.update({"Definition", catchOuput['results'][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0]})
-        #     self.dataCTXDict.update({"ShortDefinitions", catchOuput['results'][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["shortDefinitions"][0]})
-        #     self.dataCTXDict.update({"LexicalCategory", catchOuput['results'][0]["lexicalEntries"][0]["lexicalCategory"]["text"]})
-        #     #
-        #     self.dataCTXDict.update({"DialectType", catchOuput['results'][0]["lexicalEntries"][0]["pronunciations"][0]["dialects"][0]})
-        #     self.dataCTXDict.update({"PhoneticDefinition", catchOuput['results'][0]["lexicalEntries"][0]["pronunciations"][0]["phoneticNotation"]})
-        #     self.dataCTXDict.update({"PhoneticSpelling", catchOuput['results'][0]["lexicalEntries"][0]["pronunciations"][0]["phoneticSpelling"]})
-        #     #
-        #     self.dataCTXDict.update({"DialectType", catchOuput['results'][0]["lexicalEntries"][0]["pronunciations"][1]["dialects"][0]})
-        #     self.dataCTXDict.update({"PhoneticDefinition", catchOuput['results'][0]["lexicalEntries"][0]["pronunciations"][1]["phoneticNotation"]})
-        #     self.dataCTXDict.update({"PhoneticSpelling", catchOuput['results'][0]["lexicalEntries"][0]["pronunciations"][1]["phoneticSpelling"]})
         results.append({
             "Title": query,
             "SubTitle": "Query: {}".format(query),
@@ -111,29 +80,16 @@ class PrateekDictionary(Wox):
             "ContextData": "ctxData"
             # "ContextData": self.dataCTXDict
         })
-    
-        # results.append({
-        #     "Title": "Hello World",
-        #     "SubTitle": "Query: {}".format(query),
-        #     "IcoPath":"Images/app.ico",
-        #     "ContextData": "ctxData"
-        # })
 
         return results
 
     def context_menu(self, data):
         results = []
 
-        # for k,v in data:
-        #     results.append({
-        #         "Title": data["ID"],
-        #         "SubTitle": "{} : {}".format(k, v),
-        #         # "SubTitle": "Data: {}".format(data),
-        #         "IcoPath":"Images/app.ico"
-        #     })
+        # "SubTitle": "{} : {}".format(k, v),
+
         results.append({
             "Title": "ID",
-            # "SubTitle": "{} : {}".format(k, v),
             "SubTitle": "Data: {}".format(data),
             "IcoPath":"Images/app.ico"
         })
@@ -154,3 +110,5 @@ class PrateekDictionary(Wox):
 if __name__ == "__main__":
 
     PrateekDictionary()
+
+

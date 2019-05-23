@@ -1,3 +1,9 @@
 .idea
 oxford_dictionary_api.py
 isafe.py
+
+#discarded files
+dictionary.json
+dictionaryeng.json
+Download.txt
+WebstersEnglishDictionary.txt
