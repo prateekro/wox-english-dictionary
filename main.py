@@ -9,7 +9,7 @@ import re
 import isafe
 import os
 import pyperclip
-from tinydb import TinyDB, Query
+from tinydb import TinyDB, Query, where
 # import time
 
 # from isafe import BASE_URL, LANGUAGE_CODE, entries, APP_ID, APP_KEY as cred
@@ -64,20 +64,25 @@ class PrateekDictionary(Wox):
 
         suffix = "?"
         if query.endswith(suffix):
+            query = query.split("?")[0]
+
             # def meaning(self, word):
             # print("OxfordDictionaryAPI")
-            query = query.split(".")[0]
             # query = self.BASE_URL + self.entries + self.LANGUAGE_CODE + query.lower()
             # getMeaning = requests()
             # getMeaning.status_code = 200
             # getMeaning.content = b'{ \n    "id": "confectioner", \n    "metadata": {\n        "operation": "retrieve",\n        "provider": "Oxford University Press",\n        "schema": "RetrieveEntry"\n    },\n    "results": [\n        {\n            "id": "confectioner",\n            "language": "en-us",\n            "lexicalEntries": [\n                {\n                    "entries": [\n                        {\n                            "senses": [\n                                {\n                                    "definitions": [\n                                        "a person whose occupation is making or selling candy and other sweets."\n                                    ],\n                                    "domains": [\n                                        {\n                                            "id": "sweet",\n                                            "text": "Sweet"\n                                        }\n                                    ],\n                                    "id": "m_en_gbus0209730.005",\n                                    "shortDefinitions": [\n                                        "person whose trade is making or selling confectionery"\n                                    ]\n                                }\n                            ]\n                        }\n                    ],\n                    "language": "en-us",\n                    "lexicalCategory": {\n                        "id": "noun",\n                        "text": "Noun"\n                    },\n                    "pronunciations": [\n                        {\n                            "audioFile": "http://audio.oxforddictionaries.com/en/mp3/xconfectioner_us_1.mp3",\n                            "dialects": [\n                                "American English"\n                            ],\n                            "phoneticNotation": "respell",\n                            "phoneticSpelling": "k\xc9\x99n\xcb\x88fekSH(\xc9\x99)n\xc9\x99r"\n                        },\n                        {\n                            "audioFile": "http://audio.oxforddictionaries.com/en/mp3/xconfectioner_us_1.mp3",\n                            "dialects": [\n                                "American English"\n                            ],\n                            "phoneticNotation": "IPA",\n                            "phoneticSpelling": "k\xc9\x99n\xcb\x88f\xc9\x9bk\xca\x83(\xc9\x99)n\xc9\x99r"\n                        }\n                    ],\n                    "text": "confectioner"\n                }\n            ],\n            "type": "headword",\n            "word": "confectioner"\n        }\n    ],\n    "word": "confectioner"\n		}'
-            foundInLocal = self.db.all()
-            foundInLocal = self.db.search(self.Word.word == '{}'.format(query))
-            # foundInLocal = self.db.search(query == self.Word.word) #str(query.lower())
-            self.resultOut(results, str(foundInLocal))
+            # dbLength = len(self.db)#.all()
+            # self.resultOut(results, "1: " +str(dbLength))
+            # TEXT = str(type('hello')) + " :: "+ str(type(query))
+            # self.resultOut(results, "2a: "+ TEXT)
+            # TEXT = 'hello' + " :: " + query
+            # self.resultOut(results, "2b: "+ TEXT)
+            # self.resultOut(results, "2: "+str(foundInLocal))
+
+            foundInLocal = self.db.search(self.Word.word == query.lower()) #str(query.lower())
             if len(foundInLocal) > 0:
-                # aT =
-                # query = str(foundInLocal)
+
                 wordX = foundInLocal[0]['word']
                 definition = foundInLocal[0]['definition']
                 DialectType = ""
@@ -85,12 +90,15 @@ class PrateekDictionary(Wox):
                 PhoneticSpelling = foundInLocal[0]['phonetic_spelling']
                 PhoneticDefinition = foundInLocal[0]['phonetic_definition']
 
-                self.resultOut(results, "Definition: "+ foundInLocal[0]['word'] + " #[From Local]","{}: {} || {} || PhoneticDefinition: {}".format(DialectType, PhoneticSpelling, LexCategory, PhoneticDefinition))
+                query = str(definition)
+
+                self.resultOut(results, "Definition@"+str(len(foundInLocal))+": "+ definition+ " #[From Local]","{}: {} || {} || PhoneticDefinition: {}".format(DialectType, PhoneticSpelling, LexCategory, PhoneticDefinition))
                 # self.db.insert({ "word" : wordX, "definition" : definition, "lex_category" : LexCategory , "phonetic_spelling": PhoneticSpelling, "phonetic_definition": PhoneticDefinition})
             else:
-                self.resultOut(results, "SEND REQUEST")
-                """
+                #Query : OXFORD DICTIONARY API
+                # self.resultOut(results, "SEND REQUEST")
                 getMeaning = requests.get(url = self.BASE_URL + self.entries + self.LANGUAGE_CODE + query.lower(), headers = {"app_id": self.APP_ID, "app_key": self.APP_KEY})
+
                 if getMeaning.status_code == 200:
                     getMeaning = getMeaning.content
                     getMeaning = json.loads(getMeaning, encoding='utf-8')
@@ -108,10 +116,9 @@ class PrateekDictionary(Wox):
                     self.resultOut(results, "Definition: "+ query, "{}: {} || {} || PhoneticDefinition: {}".format(DialectType, PhoneticSpelling, LexCategory, PhoneticDefinition))
 
                 else:
-
-                    self.resultOut(results, query + " (word unreachable)", "Please check internet connection")
+                    self.resultOut(results, title= query + " (word unreachable)", subtitle= " :Please check internet connection")
                     #end of status code
-                """
+
             self.resultOut(results, title= query + " [inside split 0]", subtitle= query)
 
         self.resultOut(results, title= query + " [last]", subtitle= query)
